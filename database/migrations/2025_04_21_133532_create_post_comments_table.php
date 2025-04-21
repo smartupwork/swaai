@@ -13,24 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_meta', function (Blueprint $table) {
+        Schema::create('post_comments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            
-            $table->string('zip_code')->nullable();
-            $table->string('language')->nullable();
-            $table->string('currency')->nullable();
-            $table->text('billing_address1')->nullable();
-            $table->text('billing_address2')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('parent_comment_id')->nullable();
+            $table->text('content')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
@@ -38,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_meta');
+        Schema::dropIfExists('post_comments');
     }
 };

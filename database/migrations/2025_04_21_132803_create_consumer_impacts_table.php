@@ -13,24 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_meta', function (Blueprint $table) {
+        Schema::create('consumer_impacts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            
-            $table->string('zip_code')->nullable();
-            $table->string('language')->nullable();
-            $table->string('currency')->nullable();
-            $table->text('billing_address1')->nullable();
-            $table->text('billing_address2')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
+            $table->unsignedBigInteger('business_id');
+            $table->enum('action', ['check_in', 'save', 'visit_profile','visit_site'])->nullable();
             $table->timestamps();
 
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade');
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
@@ -38,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_meta');
+        Schema::dropIfExists('consumer_impacts');
     }
 };

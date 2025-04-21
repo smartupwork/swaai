@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('chats', function (Blueprint $table) {
-            $table->enum('status', ['sent', 'delivered', 'read'])->default('sent')->after('message');
+        Schema::create('reactions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->string('emoji')->nullable();
+            $table->tinyInteger('status')->default(1);
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('chats', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('reactions');
     }
 };

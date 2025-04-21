@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('name');
-            $table->text('description');
-            $table->string('image')->nullable();
-            $table->string('cat_color')->nullable();
+            $table->string('sender_id')->nullable();
+            $table->string('receiver_id')->nullable();
+            $table->text('message')->nullable();
+            $table->enum('status', ['sent', 'delivered', 'read'])->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('chats');
     }
 };

@@ -47,7 +47,7 @@ class ReviewController extends Controller
             ->orderBy('reviews.created_at', 'desc')
             ->get()
             ->map(function ($review) use ($baseUrl) {
-                $review->profile_image = $review->profile_image ? $baseUrl . '/' . ltrim($review->profile_image, '/') : null;
+                $review->profile_image = $review->profile_image ? $baseUrl . '/public/' . ltrim($review->profile_image, '/') : null;
                 return $review;
             });
 

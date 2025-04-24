@@ -28,7 +28,7 @@ class BusinessController extends Controller
 
     public function getBusiness()
     {
-        $baseUrl = config('app.url') . '/';
+        $baseUrl = config('app.url') . '/public/';
 
         $businesses = DB::table('businesses as b')
             ->join('categories as c', 'b.cat_id', '=', 'c.id')
@@ -79,7 +79,7 @@ class BusinessController extends Controller
             ->first();
 
 
-        $profileImage = $user && $user->profile_image ? $baseUrl . '/' . ltrim($user->profile_image, '/') : null;
+        $profileImage = $user && $user->profile_image ? $baseUrl . '/public/' . ltrim($user->profile_image, '/') : null;
 
 
         $reviews = DB::table('reviews')->where('business_id', $business_id)->get();
@@ -90,8 +90,8 @@ class BusinessController extends Controller
             ->select('id', 'images', 'videos', 'title', 'description', 'image_redirect_url')
             ->get()
             ->map(function ($item) use ($baseUrl) {
-                $item->images = $item->images ? $baseUrl . '/' . ltrim($item->images, '/') : null;
-                $item->videos = $item->videos ? $baseUrl . '/' . ltrim($item->videos, '/') : null;
+                $item->images = $item->images ? $baseUrl . '/public/' . ltrim($item->images, '/') : null;
+                $item->videos = $item->videos ? $baseUrl . '/public/' . ltrim($item->videos, '/') : null;
                 return $item;
             });
 
@@ -125,7 +125,7 @@ class BusinessController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $defaultDistance = 15; // Default search radius in miles
-        $baseUrl = config('app.url') . '/'; // Adjust if needed
+        $baseUrl = config('app.url') . '/public/'; // Adjust if needed
 
         // Get category IDs from saved & checked-in businesses
         $userCategories = DB::table('businesses')
@@ -239,8 +239,7 @@ class BusinessController extends Controller
         $fields = $validator->validated();
         $fullAddress = "{$fields['street']}, {$fields['city']}, {$fields['state']}, {$fields['zipcode']}, {$fields['country']}";
 
-        // echo $fullAddress;
-        // exit;
+
         $coordinates = $googleMapsService->getCoordinatesFromAddress($fullAddress);
 
         if (!$coordinates) {
@@ -269,7 +268,7 @@ class BusinessController extends Controller
 
     public function searchBusinesses(Request $request)
     {
-        $baseUrl = config('app.url') . '/';
+        $baseUrl = config('app.url') . '/public/';
 
         $latitude = $request->input('latitude', null);
         $longitude = $request->input('longitude', null);
@@ -383,8 +382,8 @@ class BusinessController extends Controller
         $response = $media->map(function ($item) {
             return [
                 'media_id' => $item->id,
-                'image_url' => $item->images ? url($item->images) : null,
-                'video_url' => $item->videos ? url($item->videos) : null,
+                'image_url' => $item->images ? url('public/' . ltrim($item->images, '/')) : null,
+                'video_url' => $item->videos ? url('public/' . ltrim($item->videos, '/')) : null,
                 'title' => $item->title,
                 'description' => $item->description,
                 'image_redirect_url' => $item->image_redirect_url,
@@ -651,7 +650,7 @@ class BusinessController extends Controller
     public function getSavedBusinesses()
     {
         $userId = Auth::id();
-        $baseUrl = config('app.url') . '/';
+        $baseUrl = config('app.url') . '/public/';
 
         $savedBusinesses = DB::table('saved_businesses as sb')
             ->join('businesses as b', 'sb.business_id', '=', 'b.id')
@@ -720,7 +719,7 @@ class BusinessController extends Controller
     public function getCheckedInBusinesses()
     {
         $userId = auth()->id();
-        $baseUrl = config('app.url') . '/';
+        $baseUrl = config('app.url') . '/public/';
 
         $checkedInBusinesses = DB::table('checked_in_businesses as c')
             ->join('businesses as b', 'c.business_id', '=', 'b.id')
@@ -764,7 +763,7 @@ class BusinessController extends Controller
 
         $now = now();
 
-        
+
         $analytics = BusinessAnalytic::where('user_id', $userId)
             ->where('business_id', $validatedData['business_id'])
             ->first();
@@ -784,13 +783,13 @@ class BusinessController extends Controller
             ]);
         }
 
-        
+
         $lastVisitTime = $analytics->last_visit_time ? Carbon::parse($analytics->last_visit_time) : null;
         $lastVideoTime = $analytics->last_video_view_time ? Carbon::parse($analytics->last_video_view_time) : null;
 
         switch ($validatedData['event_type']) {
             case 'visit':
-                
+
                 if ($lastVisitTime === null || $lastVisitTime->diffInHours($now) >= 24) {
                     $analytics->increment('unique_visits');
                     $analytics->last_visit_time = $now;
@@ -799,7 +798,7 @@ class BusinessController extends Controller
                 break;
 
             case 'video_play':
-               
+
                 if ($lastVideoTime === null || $lastVideoTime->diffInHours($now) >= 24) {
                     $analytics->increment('unique_video_visits');
                     $analytics->last_video_view_time = $now;
@@ -828,7 +827,7 @@ class BusinessController extends Controller
 
     private function saveToHistory($analytics)
     {
-        
+
         BusinessAnalyticsHistory::create([
             'user_id'             => $analytics->user_id,
             'business_id'         => $analytics->business_id,
@@ -904,29 +903,29 @@ class BusinessController extends Controller
         $startDate = $this->getStartDateByFilter($filter);
 
         $analytics = DB::table('business_analytics_history as b')
-        ->leftJoin('reviews as r', 'b.business_id', '=', 'r.business_id')
-        ->where('b.business_id', $business_id)
-        ->where('b.recorded_at', '>=', $startDate)
-        ->where('b.recorded_at', '<=', $now)
-        ->select(
-            DB::raw('SUM(b.page_visits) as total_page_visits'),
-            DB::raw('SUM(b.unique_visits) as total_unique_visits'),
-            DB::raw('SUM(b.video_views) as total_video_views'),
-            DB::raw('SUM(b.unique_video_visits) as total_unique_video_visits'),
-            DB::raw('SUM(b.coupon_selection) as total_coupon_selections'),
-            DB::raw('SUM(b.website_clicks) as total_website_clicks'),
-            DB::raw('AVG(r.rating) as average_rating')
-        )
-        ->first();
+            ->leftJoin('reviews as r', 'b.business_id', '=', 'r.business_id')
+            ->where('b.business_id', $business_id)
+            ->where('b.recorded_at', '>=', $startDate)
+            ->where('b.recorded_at', '<=', $now)
+            ->select(
+                DB::raw('SUM(b.page_visits) as total_page_visits'),
+                DB::raw('SUM(b.unique_visits) as total_unique_visits'),
+                DB::raw('SUM(b.video_views) as total_video_views'),
+                DB::raw('SUM(b.unique_video_visits) as total_unique_video_visits'),
+                DB::raw('SUM(b.coupon_selection) as total_coupon_selections'),
+                DB::raw('SUM(b.website_clicks) as total_website_clicks'),
+                DB::raw('AVG(r.rating) as average_rating')
+            )
+            ->first();
 
-    if (!$analytics) {
-        return response()->json(['message' => 'No analytics data found for the selected filter.'], 404);
-    }
+        if (!$analytics) {
+            return response()->json(['message' => 'No analytics data found for the selected filter.'], 404);
+        }
 
-    return response()->json([
-        'message' => 'Analytics data retrieved successfully!',
-        'data' => $analytics
-    ], 200);
+        return response()->json([
+            'message' => 'Analytics data retrieved successfully!',
+            'data' => $analytics
+        ], 200);
     }
 
     private function getStartDateByFilter($filter)

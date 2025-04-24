@@ -17,7 +17,7 @@ class CommunityController extends Controller
 
         $communities->transform(function ($community) {
             if ($community->banner_image) {
-                $community->banner_image = url($community->banner_image);
+                $community->banner_image = url('public/' . ltrim($community->banner_image, '/'));
             }
             return $community;
         });

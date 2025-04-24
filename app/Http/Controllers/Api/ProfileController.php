@@ -23,7 +23,7 @@ class ProfileController extends Controller
         }
 
         $baseUrl2 = request()->getSchemeAndHttpHost();
-        $profileImageUrl = $baseUrl2 . '/' . $user->profile_image;
+        $profileImageUrl = $baseUrl2 . '/public/' . $user->profile_image;
         $data = [
             'business_id' => $business->id,
             'business_name' => $business->name,
@@ -177,7 +177,7 @@ class ProfileController extends Controller
         }
 
         $baseUrl2 = request()->getSchemeAndHttpHost();
-        $profileImageUrl = $baseUrl2 . '/' . $user->profile_image;
+        $profileImageUrl = $baseUrl2 . '/public/' . $user->profile_image;
 
         $data = [
             'profile_image' => $profileImageUrl,

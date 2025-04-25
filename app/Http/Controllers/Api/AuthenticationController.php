@@ -56,7 +56,14 @@ class AuthenticationController extends Controller
             ], 401);
         }
 
-        // Check if the user has an associated business
+        $activeSubscription = DB::table('subscriptions')
+            ->where('user_id', $user->id)
+            ->get()
+            ->filter(function ($sub) {
+                return \Carbon\Carbon::parse($sub->end_date)->gte(now());
+            })
+            ->first();
+
         $businessExists = DB::table('businesses')->where('user_id', $user->id)->exists();
 
         $business = DB::table('businesses')->where('user_id', $user->id)->first();
@@ -68,8 +75,9 @@ class AuthenticationController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token->plainTextToken,
-            'business_id' =>$business_id,
+            'business_id' => $business_id,
             'businesses_created' => $businessExists ? 1 : 0,
+            'is_Subscribed' => $activeSubscription ? 1 : 0,
         ]);
     }
 

@@ -91,21 +91,8 @@ class StripeController extends Controller
         try {
 
             $user = User::findOrFail($request->user_id);
-            if ($user->stripe_customer_id) {
-                $stripe = $this->stripeClient;
-                $subscriptions = $stripe->subscriptions->all([
-                    'customer' => $user->stripe_customer_id,
-                    'status' => 'all',
-                ]);
-                $activeStatuses = ['active', 'trialing'];
-                foreach ($subscriptions->data as $subscription) {
-                    if (in_array($subscription->status, $activeStatuses)) {
-                        return response()->json([
-                            'message' => 'You already have an active or trialing subscription.',
-                        ], 400);
-                    }
-                }
-            }
+            
+            \App\Models\Subscriptions::where('user_id', $user->id)->delete();
             
             if (!$user->stripe_customer_id) {
                 $customer = \Stripe\Customer::create([

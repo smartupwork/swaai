@@ -40,7 +40,9 @@ class ChatController extends Controller
                 return [
                     'chat_id' => $latestChat->id,
                     'user_id' => $otherUser->id,
-                    'name' => $otherUser->first_name . ' ' . $otherUser->last_name ?? 'Anonymous',
+                    'name' => ($otherUser->first_name && $otherUser->last_name)
+                        ? $otherUser->first_name . ' ' . $otherUser->last_name
+                        : 'Anonymous',
                     'profile_image' => $otherUser->profile_image ?? 'https://r6u.585.mytemp.website/public/media/user-avatar.png',
                     'last_message' => $latestChat->message,
                     'status' => $latestChat->status,

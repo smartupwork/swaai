@@ -219,6 +219,7 @@ class BusinessController extends Controller
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'cat_id' => 'required|integer',
+            'business_type' => 'required|string',
             'business_name' => 'required|string',
             'description' => 'nullable|string',
             'website_url' => 'nullable|string',
@@ -249,6 +250,7 @@ class BusinessController extends Controller
         $business = new Business();
         $business->user_id = $fields['user_id'];
         $business->cat_id = $fields['cat_id'];
+        $business->business_type = $fields['business_type'];
         $business->name = $fields['business_name'];
         $business->description = $fields['description'];
         $business->website_url = $fields['website_url'] ?? 'example.abc.test';
@@ -272,7 +274,7 @@ class BusinessController extends Controller
 
         $latitude = $request->input('latitude', null);
         $longitude = $request->input('longitude', null);
-        $categoryId = $request->input('category', null);
+        $businessType  = $request->input('category', null);
         $minRating = $request->input('min_reviews', null);
         $maxDistance = $request->input('max_distance', null);
 
@@ -305,6 +307,7 @@ class BusinessController extends Controller
                 'businesses.name',
                 'businesses.latitude',
                 'businesses.longitude',
+                'businesses.business_type',
                 'businesses.cat_id',
                 'businesses.user_id',
                 'businesses.description',
@@ -317,8 +320,8 @@ class BusinessController extends Controller
             ])
             ->addSelect(DB::raw("COALESCE(AVG(reviews.rating), 0) as average_rating"));
 
-        if (!empty($categoryId)) {
-            $query->where('businesses.cat_id', $categoryId);
+        if (!empty($businessType)) {
+            $query->where('businesses.business_type', $businessType);
         }
 
         if (!empty($minRating)) {
@@ -347,7 +350,7 @@ class BusinessController extends Controller
             return [
                 'id' => $business->id,
                 'name' => $business->name,
-                'category_id' => $business->cat_id,
+                'business_type' => $business->business_type,
                 'description' => $business->description,
                 'business_address' => $business->business_address,
                 'website_url' => $business->website_url,

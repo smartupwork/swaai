@@ -178,6 +178,7 @@ class StripeController extends Controller
             $cards = DB::table('cards')
                 ->where('user_id', $id)
                 ->get();
+                
             $cardDetails = [];
             foreach ($cards as $card) {
                 $cardDetails[] = [

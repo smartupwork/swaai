@@ -79,7 +79,6 @@ class StripeController extends Controller
             'token' => 'required',
             'plan_id' => 'required',
             'email' => 'required|email',
-            'name' => 'required',
         ]);
 
         return view('subscription.checkout', [

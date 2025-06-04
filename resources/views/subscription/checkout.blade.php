@@ -11,7 +11,9 @@
 </head>
 
 <body class="bg-white flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md px-6 py-8 bg-gray-100 rounded-xl shadow-md">
+
+    <h1>hello</h1>
+    {{-- <div class="w-full max-w-md px-6 py-8 bg-gray-100 rounded-xl shadow-md">
         <h2 class="text-2xl font-bold text-gray-800 mb-2">Add a payment method</h2>
         <p class="text-sm text-gray-600 mb-6">You won’t be charged until you confirm the subscription</p>
 
@@ -21,7 +23,7 @@
             </div>
         @endif
 
-        <form id="subscription-form" action="{{ route('subscribe.process') }}" method="POST" class="space-y-4">
+        <form id="subscription-form" action="" method="POST" class="space-y-4">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
             <input type="hidden" name="plan_id" value="{{ $plan_id }}">
@@ -100,7 +102,7 @@
                 form.submit();
             }
         });
-    </script>
+    </script> --}}
 </body>
 
 </html>

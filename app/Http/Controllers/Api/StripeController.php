@@ -75,18 +75,13 @@ class StripeController extends Controller
     public function showCheckoutForm(Request $request)
     {
 
-        $request->validate([
-            'token' => 'required',
-            'plan_id' => 'required',
-            'email' => 'required|email',
-        ]);
+        // $request->validate([
+        //     'token' => 'required',
+        //     'plan_id' => 'required',
+        //     'email' => 'required|email',
+        // ]);
 
-        return view('subscription.checkout', [
-            'token' => $request->token,
-            'plan_id' => $request->plan_id,
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        return view('subscription.checkout');
     }
 
     public function subscribeWithCard(Request $request)

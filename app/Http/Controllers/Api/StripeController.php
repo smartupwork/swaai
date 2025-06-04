@@ -36,25 +36,25 @@ class StripeController extends Controller
     {
         try {
             $products = $this->stripeClient->products->all();
-    
+
             \Log::info('Stripe Products:', $products->data);
-    
+
             if (empty($products->data)) {
                 return response()->json(['error' => 'No products found'], 404);
             }
-    
+
             $plans = [];
-    
+
             foreach ($products->data as $product) {
                 $prices = $this->stripeClient->prices->all(['product' => $product->id]);
-    
+
                 \Log::info("Prices for Product ID {$product->id}:", $prices->data);
-    
+
                 if (empty($prices->data)) {
                     \Log::info("No prices found for product: " . $product->name);
                     continue;
                 }
-    
+
                 foreach ($prices->data as $price) {
                     $plans[] = [
                         'product' => $product->name,
@@ -64,15 +64,31 @@ class StripeController extends Controller
                     ];
                 }
             }
-    
+
             return response()->json($plans);
         } catch (\Exception $e) {
             \Log::error('Error fetching plans: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to fetch plans'], 500);
         }
     }
-    
 
+    public function showCheckoutForm(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required',
+            'plan_id' => 'required',
+            'email' => 'required|email',
+            'name' => 'required',
+        ]);
+
+        return view('subscription.checkout', [
+            'token' => $request->token,
+            'plan_id' => $request->plan_id,
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+    }
 
     public function subscribeWithCard(Request $request)
     {
@@ -91,9 +107,9 @@ class StripeController extends Controller
         try {
 
             $user = User::findOrFail($request->user_id);
-            
+
             \App\Models\Subscriptions::where('user_id', $user->id)->delete();
-            
+
             if (!$user->stripe_customer_id) {
                 $customer = \Stripe\Customer::create([
                     'email' => $user->email,
@@ -178,7 +194,7 @@ class StripeController extends Controller
             $cards = DB::table('cards')
                 ->where('user_id', $id)
                 ->get();
-                
+
             $cardDetails = [];
             foreach ($cards as $card) {
                 $cardDetails[] = [

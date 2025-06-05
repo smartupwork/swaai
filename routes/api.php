@@ -34,7 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [AuthenticationController::class, 'logout']);
     Route::get('/plans', [StripeController::class, 'getPlans']);
-    Route::post('/create-subscription', [StripeController::class, 'subscribeWithCard']);
+    // Route::post('/create-subscription', [StripeController::class, 'subscribeWithCard']);
     Route::get('/categories', [BusinessController::class, 'getCategories']);
     Route::get('/sub/categories', [BusinessController::class, 'get_sub_categories']);
     //Route::post('/checkout', [StripeController::class, 'checkout']);

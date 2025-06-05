@@ -75,35 +75,135 @@ class StripeController extends Controller
     public function showCheckoutForm(Request $request)
     {
 
-        // $request->validate([
-        //     'token' => 'required',
-        //     'plan_id' => 'required',
-        //     'email' => 'required|email',
-        // ]);
+        $request->validate([
+            'token' => 'required',
+            'price_id' => 'required',
+            'product' => 'required',
+            'user_id' => 'required',
+            'email' => 'required|email',
+        ]);
 
-        return view('subscription.checkout');
+        return view('subscription.checkout', [
+            'stripeKey' => config('services.stripe.public'),
+            'token' => $request->token,
+            'price_id' => $request->price_id,
+            'user_id' => $request->user_id,
+            'product' => $request->product,
+            'email' => $request->email,
+        ]);
     }
+
+    // public function subscribeWithCard(Request $request)
+    // {
+    //     $request->validate([
+    //         'user_id' => 'required|exists:users,id',
+    //         'price_id' => 'required',
+    //         'product' => 'required',
+    //         'expiry_date' => 'required|string',
+    //         'billing_address1' => 'required|string',
+    //         'billing_address2' => 'nullable|string',
+    //         'city' => 'nullable|string',
+    //         'state' => 'nullable|string',
+    //         'postal_code' => 'nullable|string',
+    //         'zip_code' => 'nullable|string',
+    //     ]);
+    //     try {
+
+    //         $user = User::findOrFail($request->user_id);
+
+    //         \App\Models\Subscriptions::where('user_id', $user->id)->delete();
+
+    //         if (!$user->stripe_customer_id) {
+    //             $customer = \Stripe\Customer::create([
+    //                 'email' => $user->email,
+    //                 'name' => $user->first_name . ' ' . $user->last_name,
+    //                 'address' => [
+    //                     'line1' => $request->billing_address1,
+    //                     'line2' => $request->billing_address2 ?? '',
+    //                     'city' => $request->city ?? '',
+    //                     'state' => $request->state ?? '',
+    //                     'postal_code' => $request->postal_code ?? '',
+    //                 ],
+    //             ]);
+    //             $user->stripe_customer_id = $customer->id;
+    //             $user->save();
+    //         } else {
+    //             $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
+    //         }
+    //         $token = 'tok_visa'; // Use a live token for production
+    //         $paymentMethod = \Stripe\PaymentMethod::create([
+    //             'type' => 'card',
+    //             'card' => [
+    //                 'token' => $token,
+    //             ],
+    //         ]);
+    //         $paymentMethod->attach(['customer' => $customer->id]);
+    //         $payment = PaymentMethodDb::create([
+    //             'user_id' => $user->id,
+    //             'stripe_method_id' => $paymentMethod->id,
+    //             'card_type' => $paymentMethod->card->brand,
+    //             'expiry_month' => $paymentMethod->card->exp_month,
+    //             'expiry_year' => $paymentMethod->card->exp_year,
+    //             'last_4' => $paymentMethod->card->last4,
+    //         ]);
+    //         UserMeta::updateOrCreate(
+    //             ['user_id' => $user->id],
+    //             [
+    //                 'billing_address1' => $request->billing_address1,
+    //                 'billing_address2' => $request->billing_address2 ?? '',
+    //                 'city' => $request->city ?? '',
+    //                 'state' => $request->state ?? '',
+    //                 'postal_code' => $request->postal_code ?? '',
+    //                 'country_id' => 1,
+    //             ]
+    //         );
+    //         $subscription = \Stripe\Subscription::create([
+    //             'customer' => $customer->id,
+    //             'items' => [['price' => $request->price_id]],
+    //             'default_payment_method' => $paymentMethod->id,
+    //         ]);
+    //         $status = $subscription->status === 'active' ? 1 : 0;
+    //         \App\Models\Subscriptions::create([
+    //             'user_id' => $user->id,
+    //             'payment_id' => $payment->id,
+    //             'stripe_plan_id' => $request->price_id,
+    //             'plan' => $request->product,
+    //             'status' => $status,
+    //             'start_date' => now(),
+    //             'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
+    //         ]);
+    //         return response()->json([
+    //             'message' => 'Subscription created successfully.',
+    //             'subscription_id' => $subscription->id,
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         \Log::error('Subscription Error: ' . $e->getMessage());
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 
     public function subscribeWithCard(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'price_id' => 'required',
-            'product' => 'required',
-            'expiry_date' => 'required|string',
+            'price_id' => 'required|string',
+            'product' => 'required|string',
+            'payment_method_id' => 'required|string',
             'billing_address1' => 'required|string',
             'billing_address2' => 'nullable|string',
             'city' => 'nullable|string',
             'state' => 'nullable|string',
             'postal_code' => 'nullable|string',
-            'zip_code' => 'nullable|string',
+            'country' => 'required|string|max:2',
         ]);
-        try {
 
+        try {
             $user = User::findOrFail($request->user_id);
 
+            // Delete any existing subscription records
             \App\Models\Subscriptions::where('user_id', $user->id)->delete();
 
+            // Create Stripe customer if not already created
             if (!$user->stripe_customer_id) {
                 $customer = \Stripe\Customer::create([
                     'email' => $user->email,
@@ -114,21 +214,28 @@ class StripeController extends Controller
                         'city' => $request->city ?? '',
                         'state' => $request->state ?? '',
                         'postal_code' => $request->postal_code ?? '',
+                        'country' => strtoupper($request->country),
                     ],
                 ]);
+
                 $user->stripe_customer_id = $customer->id;
                 $user->save();
             } else {
                 $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
             }
-            $token = 'tok_visa'; // Use a live token for production
-            $paymentMethod = \Stripe\PaymentMethod::create([
-                'type' => 'card',
-                'card' => [
-                    'token' => $token,
+
+            // Attach provided payment method to the customer
+            $paymentMethod = \Stripe\PaymentMethod::retrieve($request->payment_method_id);
+            $paymentMethod->attach(['customer' => $customer->id]);
+
+            // Update customer's default payment method
+            \Stripe\Customer::update($customer->id, [
+                'invoice_settings' => [
+                    'default_payment_method' => $paymentMethod->id,
                 ],
             ]);
-            $paymentMethod->attach(['customer' => $customer->id]);
+
+            // Save card details locally
             $payment = PaymentMethodDb::create([
                 'user_id' => $user->id,
                 'stripe_method_id' => $paymentMethod->id,
@@ -137,6 +244,8 @@ class StripeController extends Controller
                 'expiry_year' => $paymentMethod->card->exp_year,
                 'last_4' => $paymentMethod->card->last4,
             ]);
+
+            // Save billing address
             UserMeta::updateOrCreate(
                 ['user_id' => $user->id],
                 [
@@ -145,33 +254,40 @@ class StripeController extends Controller
                     'city' => $request->city ?? '',
                     'state' => $request->state ?? '',
                     'postal_code' => $request->postal_code ?? '',
-                    'country_id' => 1,
+                    'country_id' => 1, // Change this if you're storing ISO code
                 ]
             );
+
+            // Create subscription
             $subscription = \Stripe\Subscription::create([
                 'customer' => $customer->id,
-                'items' => [['price' => $request->price_id]],
+                'items' => [
+                    ['price' => $request->price_id],
+                ],
                 'default_payment_method' => $paymentMethod->id,
             ]);
-            $status = $subscription->status === 'active' ? 1 : 0;
+
+            // Save subscription record in DB
             \App\Models\Subscriptions::create([
                 'user_id' => $user->id,
                 'payment_id' => $payment->id,
                 'stripe_plan_id' => $request->price_id,
                 'plan' => $request->product,
-                'status' => $status,
+                'status' => $subscription->status === 'active' ? 1 : 0,
                 'start_date' => now(),
                 'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
             ]);
+
             return response()->json([
                 'message' => 'Subscription created successfully.',
                 'subscription_id' => $subscription->id,
             ]);
         } catch (\Exception $e) {
             \Log::error('Subscription Error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Subscription failed: ' . $e->getMessage()], 500);
         }
     }
+
 
     public function getAllCards($id)
     {

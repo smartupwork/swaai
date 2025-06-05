@@ -19,3 +19,4 @@ Route::get('/', function () {
 });
 
 Route::get('/subscribe', [StripeController::class, 'showCheckoutForm'])->name('subscribe.form');
+Route::post('/create-subscription', [StripeController::class, 'subscribeWithCard'])->name('subscribe.submit');

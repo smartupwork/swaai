@@ -278,13 +278,23 @@ class StripeController extends Controller
                 'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
             ]);
 
-            return response()->json([
+            // return response()->json([
+            //     'message' => 'Subscription created successfully.',
+            //     'subscription_id' => $subscription->id,
+            // ]);
+
+            return view('subscription.success', [
                 'message' => 'Subscription created successfully.',
                 'subscription_id' => $subscription->id,
+                'return_url' => 'myapp://payment-status?success=true'
             ]);
         } catch (\Exception $e) {
-            \Log::error('Subscription Error: ' . $e->getMessage());
-            return response()->json(['error' => 'Subscription failed: ' . $e->getMessage()], 500);
+            // \Log::error('Subscription Error: ' . $e->getMessage());
+            // return response()->json(['error' => 'Subscription failed: ' . $e->getMessage()], 500);
+            return view('subscription.success', [
+                'message' => 'Sorry something went wrong.',
+                'return_url' => 'myapp://payment-status?success=false'
+            ]);
         }
     }
 

@@ -138,6 +138,34 @@ class ProfileController extends Controller
         }
     }
 
+    // public function updateUserMeta(Request $request, $userId)
+    // {
+    //     $validated = $request->validate([
+    //         'country' => 'nullable|string|max:255',
+    //         'language' => 'nullable|string|max:255',
+    //         'currency' => 'nullable|string|max:255',
+    //     ]);
+    //     $userMeta = UserMeta::where('user_id', $userId)->first();
+    //     if (!$userMeta) {
+    //         return response()->json(['message' => 'User meta not found'], 404);
+    //     }
+    //     // Update only the fields that are present in the request
+    //     if (isset($validated['country'])) {
+    //         $userMeta->country = $validated['country'];
+    //     }
+    //     if (isset($validated['language'])) {
+    //         $userMeta->language = $validated['language'];
+    //     }
+    //     if (isset($validated['currency'])) {
+    //         $userMeta->currency = $validated['currency'];
+    //     }
+    //     $userMeta->save();
+    //     return response()->json([
+    //         'message' => 'User meta updated successfully',
+    //         'data' => $userMeta
+    //     ], 200);
+    // }
+
     public function updateUserMeta(Request $request, $userId)
     {
         $validated = $request->validate([
@@ -145,11 +173,25 @@ class ProfileController extends Controller
             'language' => 'nullable|string|max:255',
             'currency' => 'nullable|string|max:255',
         ]);
+
         $userMeta = UserMeta::where('user_id', $userId)->first();
+
         if (!$userMeta) {
-            return response()->json(['message' => 'User meta not found'], 404);
+            // Create a new UserMeta with default values
+            $userMeta = new UserMeta();
+            $userMeta->user_id = $userId;
+            $userMeta->country = $validated['country'] ?? 'US';
+            $userMeta->language = $validated['language'] ?? 'English';
+            $userMeta->currency = $validated['currency'] ?? 'USD';
+            $userMeta->save();
+
+            return response()->json([
+                'message' => 'User meta created with default values',
+                'data' => $userMeta
+            ], 201);
         }
-        // Update only the fields that are present in the request
+
+        
         if (isset($validated['country'])) {
             $userMeta->country = $validated['country'];
         }
@@ -159,12 +201,15 @@ class ProfileController extends Controller
         if (isset($validated['currency'])) {
             $userMeta->currency = $validated['currency'];
         }
+
         $userMeta->save();
+
         return response()->json([
             'message' => 'User meta updated successfully',
             'data' => $userMeta
         ], 200);
     }
+
 
     public function get_consumer_profile($id)
     {

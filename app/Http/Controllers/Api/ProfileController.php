@@ -29,6 +29,7 @@ class ProfileController extends Controller
             'business_name' => $business->name,
             'profile_image' => $profileImageUrl,
             'user_id' => $user->id,
+            'summary_desc' => $user->summary_desc,
             'email' => $user->email,
             'password' => $user->password,
             'address' => $user->address,
@@ -186,7 +187,7 @@ class ProfileController extends Controller
             $userMeta->save();
 
             return response()->json([
-                'message' => 'User meta created with default values',
+                'message' => 'User meta created successfully',
                 'data' => $userMeta
             ], 201);
         }
@@ -229,6 +230,7 @@ class ProfileController extends Controller
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'user_id' => $user->id,
+            'summary_desc' => $user->summary_desc,
             'email' => $user->email,
             'password' => $user->password,
 

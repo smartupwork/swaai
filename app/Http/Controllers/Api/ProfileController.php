@@ -192,7 +192,7 @@ class ProfileController extends Controller
             ], 201);
         }
 
-        
+
         if (isset($validated['country'])) {
             $userMeta->country = $validated['country'];
         }
@@ -246,7 +246,6 @@ class ProfileController extends Controller
         $user = User::find($request->user_id);
 
         if ($user) {
-
             if ($request->has('email') && $request->email !== '') {
                 $existingUser = User::where('email', $request->email)
                     ->where('id', '!=', $user->id)
@@ -298,5 +297,26 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'User not found'
         ], 404);
+    }
+
+    public function updateSummary(Request $request, $id)
+    {
+        $request->validate([
+            'summary_desc' => 'nullable|string',
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->summary_desc = $request->input('summary_desc');
+        $user->save();
+
+        return response()->json([
+            'message' => 'Summary updated successfully',
+            'data' => $user
+        ], 200);
     }
 }

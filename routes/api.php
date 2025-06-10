@@ -98,7 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/chat/read/{user_id}', [ChatController::class, 'markAsRead']);
 
     Route::get('/consumer/calculate-impact', [ConsumerController::class, 'calculateImpact']);
-    
+    Route::patch('/users/summary/{id}', [ProfileController::class, 'updateSummary']);
 
 });
 

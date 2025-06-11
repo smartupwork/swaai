@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('user-meta/{userId}', [ProfileController::class, 'updateUserMeta']);
 
     Route::post('/add-card', [StripeController::class, 'addNewCard']);
+    Route::post('/card/edit', [StripeController::class, 'editCard']);
     Route::get('/get-cards/{id}', [StripeController::class, 'getAllCards']);
     Route::post('/make-card-default', [StripeController::class, 'setDefaultCard']);
 

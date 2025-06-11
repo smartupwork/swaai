@@ -417,89 +417,61 @@ class StripeController extends Controller
     }
 
     public function editCard(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'card_id' => 'required|exists:cards,id',
-            'stripe_card_id' => 'required|string',
-            'card_number' => 'nullable|string',
-            'expiry_date' => 'nullable|string',
-            'cvc' => 'nullable|string',
-            'name' => 'nullable|string',
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'card_id' => 'required|exists:cards,id',
+        'stripe_card_id' => 'required|string',
+        'card_number' => 'required|string',
+        'expiry_date' => 'required|string',
+        'cvc' => 'required|string',
+        'name' => 'nullable|string',
+    ]);
+
+    try {
+        $user = User::findOrFail($request->user_id);
+
+        $last4 = substr($request->card_number, -4);
+        $expMonth = substr($request->expiry_date, 0, 2);
+        $expYear = substr($request->expiry_date, -4);
+
+        // This token is a placeholder. Replace with actual tokenization logic if using real card input.
+        $token = 'tok_visa';
+
+        // Create a new payment method on Stripe (without attaching to customer)
+        $newPaymentMethod = $this->stripeClient->paymentMethods->create([
+            'type' => 'card',
+            'card' => [
+                'token' => $token,
+            ],
         ]);
 
-        try {
-            $user = User::findOrFail($request->user_id);
-
-            $card = DB::table('cards')
-                ->where('id', $request->card_id)
-                ->where('user_id', $request->user_id)
-                ->first();
-
-            if (!$card) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Card not found.',
-                ]);
-            }
-
-            $updateData = [];
-
-            // If card_number, expiry_date, cvc are provided, create a new Stripe card
-            if ($request->card_number && $request->expiry_date && $request->cvc) {
-                $last4 = substr($request->card_number, -4);
-                $expMonth = substr($request->expiry_date, 0, 2);
-                $expYear = substr($request->expiry_date, -4);
-
-                $token = 'tok_mastercard'; // Replace with actual token from frontend
-
-                $newPaymentMethod = $this->stripeClient->paymentMethods->create([
-                    'type' => 'card',
-                    'card' => [
-                        'token' => $token,
-                    ],
-                ]);
-
-                $this->stripeClient->paymentMethods->attach(
-                    $newPaymentMethod->id,
-                    ['customer' => $user->stripe_customer_id]
-                );
-
-                // Optionally detach the old card from Stripe
-                $this->stripeClient->paymentMethods->detach($request->stripe_card_id);
-
-                // Update DB with new Stripe card info
-                $updateData = array_merge($updateData, [
-                    'stripe_id' => $newPaymentMethod->id,
-                    'last4' => $newPaymentMethod->card->last4,
-                    'brand' => $newPaymentMethod->card->brand,
-                    'card_type' => $newPaymentMethod->card->funding,
-                    'exp_month' => $newPaymentMethod->card->exp_month,
-                    'exp_year' => $newPaymentMethod->card->exp_year,
-                ]);
-            }
-
-            // Update name if provided
-            if ($request->has('name')) {
-                $updateData['name'] = $request->name;
-            }
-
-            DB::table('cards')
-                ->where('id', $request->card_id)
-                ->update($updateData);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Card updated successfully.',
+        // Update card details in the local database
+        DB::table('cards')
+            ->where('id', $request->card_id)
+            ->update([
+                'stripe_id' => $newPaymentMethod->id,
+                'last4' => $newPaymentMethod->card->last4,
+                'brand' => $newPaymentMethod->card->brand,
+                'card_type' => $newPaymentMethod->card->funding,
+                'exp_month' => $newPaymentMethod->card->exp_month,
+                'exp_year' => $newPaymentMethod->card->exp_year,
+                'updated_at' => now(),
             ]);
-        } catch (\Exception $e) {
-            \Log::error('Edit Card Error: ' . $e->getMessage());
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ]);
-        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Card updated successfully.',
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Edit Card Error: ' . $e->getMessage());
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ]);
     }
+}
+
 
 
 

@@ -49,7 +49,7 @@ class StripeController extends Controller
 
         $session = BillingPortalSession::create([
             'customer' => $user->stripe_customer_id,
-            'return_url' => 'myapp://payment-status?success=true',
+            'return_url' => 'https://yourapp.com/account',
         ]);
 
         return response()->json([

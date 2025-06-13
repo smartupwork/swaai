@@ -16,6 +16,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\ConsumerController;
 use App\Models\Business;
+use App\Http\Controllers\Api\StripeWebhookController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sub/categories', [BusinessController::class, 'get_sub_categories']);
     //Route::post('/checkout', [StripeController::class, 'checkout']);
     
+    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
     // Business Routes
     Route::post('/createbusiness', [BusinessController::class, 'createBusiness']);
     Route::get('/get-business', [BusinessController::class, 'getBusiness']);

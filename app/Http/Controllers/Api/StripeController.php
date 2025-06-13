@@ -18,6 +18,8 @@ use Stripe\Customer;
 use Stripe\PaymentMethod;
 use Stripe\Subscription;
 use Stripe\BillingPortal\Session as BillingPortalSession;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SubscriptionConfirmation;
 
 use Illuminate\Support\Facades\DB;
 
@@ -292,7 +294,7 @@ class StripeController extends Controller
             ]);
 
             // Save subscription record in DB
-            \App\Models\Subscriptions::create([
+           $subscriptionRecord = \App\Models\Subscriptions::create([
                 'user_id' => $user->id,
                 'payment_id' => $payment->id,
                 'stripe_plan_id' => $request->price_id,
@@ -302,10 +304,7 @@ class StripeController extends Controller
                 'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
             ]);
 
-            // return response()->json([
-            //     'message' => 'Subscription created successfully.',
-            //     'subscription_id' => $subscription->id,
-            // ]);
+            Mail::to($user->email)->send(new SubscriptionConfirmation($user, $subscriptionRecord));
 
             return view('subscription.success', [
                 'message' => 'Subscription created successfully.',

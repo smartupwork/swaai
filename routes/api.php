@@ -39,8 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories', [BusinessController::class, 'getCategories']);
     Route::get('/sub/categories', [BusinessController::class, 'get_sub_categories']);
     //Route::post('/checkout', [StripeController::class, 'checkout']);
+
     
-    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
     // Business Routes
     Route::post('/createbusiness', [BusinessController::class, 'createBusiness']);
     Route::get('/get-business', [BusinessController::class, 'getBusiness']);

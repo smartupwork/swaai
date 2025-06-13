@@ -64,6 +64,11 @@ class AuthenticationController extends Controller
             })
             ->first();
 
+        $subscriptionStatus = DB::table('subscriptions')
+            ->where('user_id', $user->id)
+            ->where('status', 1)
+            ->exists() ? 1 : 0;
+
         $businessExists = DB::table('businesses')->where('user_id', $user->id)->exists();
 
         $business = DB::table('businesses')->where('user_id', $user->id)->first();
@@ -78,6 +83,7 @@ class AuthenticationController extends Controller
             'business_id' => $business_id,
             'businesses_created' => $businessExists ? 1 : 0,
             'is_Subscribed' => $activeSubscription ? 1 : 0,
+            'subscription_status' => $subscriptionStatus,
         ]);
     }
 

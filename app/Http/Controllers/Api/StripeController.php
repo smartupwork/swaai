@@ -294,7 +294,7 @@ class StripeController extends Controller
             ]);
 
             // Save subscription record in DB
-           $subscriptionRecord = \App\Models\Subscriptions::create([
+            $subscriptionRecord = \App\Models\Subscriptions::create([
                 'user_id' => $user->id,
                 'payment_id' => $payment->id,
                 'stripe_plan_id' => $request->price_id,
@@ -312,8 +312,8 @@ class StripeController extends Controller
                 'return_url' => 'myapp://payment-status?success=true'
             ]);
         } catch (\Exception $e) {
-            // \Log::error('Subscription Error: ' . $e->getMessage());
-            // return response()->json(['error' => 'Subscription failed: ' . $e->getMessage()], 500);
+            \Log::error('Subscription Error: ' . $e->getMessage());
+
             return view('subscription.success', [
                 'message' => 'Sorry something went wrong.',
                 'return_url' => 'myapp://payment-status?success=false'

@@ -243,9 +243,9 @@ class BusinessController extends Controller
 
         $coordinates = $googleMapsService->getCoordinatesFromAddress($fullAddress);
 
-        if (!$coordinates) {
-            return response()->json(['message' => 'Invalid address. Please enter a valid location.'], 400);
-        }
+        // if (!$coordinates) {
+        //     return response()->json(['message' => 'Invalid address. Please enter a valid location.'], 400);
+        // }
 
         $business = new Business();
         $business->user_id = $fields['user_id'];

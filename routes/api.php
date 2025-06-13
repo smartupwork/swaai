@@ -65,6 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/card/edit', [StripeController::class, 'editCard']);
     Route::get('/get-cards/{id}', [StripeController::class, 'getAllCards']);
     Route::post('/make-card-default', [StripeController::class, 'setDefaultCard']);
+    Route::post('/create-billing-portal', [StripeController::class, 'createBillingPortal']);
 
     Route::get('/get-communities/{id}', [CommunityController::class, 'getCommunities']);
     Route::post('/add-community', [CommunityController::class, 'addNewCommunity']);

@@ -17,6 +17,7 @@ use Stripe\PaymentIntent;
 use Stripe\Customer;
 use Stripe\PaymentMethod;
 use Stripe\Subscription;
+use Stripe\BillingPortal\Session as BillingPortalSession;
 
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +32,29 @@ class StripeController extends Controller
         $this->stripeClient = new \Stripe\StripeClient(config('services.stripe.secret'));
     }
 
+    public function createBillingPortal(Request $request)
+    {
+        $user = User::findOrFail($request->user_id);
+
+        if (!$user->stripe_customer_id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Stripe customer ID not found for this user.',
+            ], 400);
+        }
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = BillingPortalSession::create([
+            'customer' => $user->stripe_customer_id,
+            'return_url' => 'myapp://payment-status?success=true',
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'url' => $session->url,
+        ]);
+    }
 
     public function getPlans()
     {
@@ -417,60 +441,60 @@ class StripeController extends Controller
     }
 
     public function editCard(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'card_id' => 'required|exists:cards,id',
-        'stripe_card_id' => 'required|string',
-        'card_number' => 'required|string',
-        'expiry_date' => 'required|string',
-        'cvc' => 'required|string',
-        'name' => 'nullable|string',
-    ]);
-
-    try {
-        $user = User::findOrFail($request->user_id);
-
-        $last4 = substr($request->card_number, -4);
-        $expMonth = substr($request->expiry_date, 0, 2);
-        $expYear = substr($request->expiry_date, -4);
-
-        // This token is a placeholder. Replace with actual tokenization logic if using real card input.
-        $token = 'tok_visa';
-
-        // Create a new payment method on Stripe (without attaching to customer)
-        $newPaymentMethod = $this->stripeClient->paymentMethods->create([
-            'type' => 'card',
-            'card' => [
-                'token' => $token,
-            ],
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'card_id' => 'required|exists:cards,id',
+            'stripe_card_id' => 'required|string',
+            'card_number' => 'required|string',
+            'expiry_date' => 'required|string',
+            'cvc' => 'required|string',
+            'name' => 'nullable|string',
         ]);
 
-        // Update card details in the local database
-        DB::table('cards')
-            ->where('id', $request->card_id)
-            ->update([
-                'stripe_id' => $newPaymentMethod->id,
-                'last4' => $newPaymentMethod->card->last4,
-                'brand' => $newPaymentMethod->card->brand,
-                'card_type' => $newPaymentMethod->card->funding,
-                'exp_month' => $newPaymentMethod->card->exp_month,
-                'exp_year' => $newPaymentMethod->card->exp_year,
-                'updated_at' => now(),
+        try {
+            $user = User::findOrFail($request->user_id);
+
+            $last4 = substr($request->card_number, -4);
+            $expMonth = substr($request->expiry_date, 0, 2);
+            $expYear = substr($request->expiry_date, -4);
+
+            // This token is a placeholder. Replace with actual tokenization logic if using real card input.
+            $token = 'tok_visa';
+
+            // Create a new payment method on Stripe (without attaching to customer)
+            $newPaymentMethod = $this->stripeClient->paymentMethods->create([
+                'type' => 'card',
+                'card' => [
+                    'token' => $token,
+                ],
             ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Card updated successfully.',
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Edit Card Error: ' . $e->getMessage());
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ]);
+            // Update card details in the local database
+            DB::table('cards')
+                ->where('id', $request->card_id)
+                ->update([
+                    'stripe_id' => $newPaymentMethod->id,
+                    'last4' => $newPaymentMethod->card->last4,
+                    'brand' => $newPaymentMethod->card->brand,
+                    'card_type' => $newPaymentMethod->card->funding,
+                    'exp_month' => $newPaymentMethod->card->exp_month,
+                    'exp_year' => $newPaymentMethod->card->exp_year,
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Card updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Edit Card Error: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
-}
 
 
 

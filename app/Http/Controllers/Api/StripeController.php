@@ -321,8 +321,16 @@ class StripeController extends Controller
         } catch (\Exception $e) {
             \Log::error('Subscription Error: ' . $e->getMessage());
 
+            $statusMessage = 'Sorry, something went wrong.';
+
+            if ($e instanceof \Stripe\Exception\CardException) {
+                $statusMessage = $e->getError()->message ?? $statusMessage;
+            } elseif ($e instanceof \Stripe\Exception\ApiErrorException) {
+                $statusMessage = $e->getMessage();
+            }
+
             return view('subscription.success', [
-                'message' => 'Sorry something went wrong.',
+                'message' => $statusMessage,
                 'return_url' => 'myapp://payment-status?success=false'
             ]);
         }

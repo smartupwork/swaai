@@ -297,9 +297,9 @@ class StripeController extends Controller
             $paymentIntent = $subscription->latest_invoice->payment_intent ?? null;
             $lastPaymentError = $paymentIntent->last_payment_error->message ?? null;
 
-            // Get friendly status message
+            
             $statusMessage = Subscriptions::getStripeStatusMessage($subscription->status, $lastPaymentError);
-            // Save subscription record in DB
+            
             $subscriptionRecord = \App\Models\Subscriptions::create([
                 'user_id' => $user->id,
                 'payment_id' => $payment->id,

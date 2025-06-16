@@ -256,8 +256,10 @@ class BusinessController extends Controller
         $business->website_url = $fields['website_url'] ?? 'example.abc.test';
         $business->business_address = $fullAddress;
         $business->is_featured = 1;
-        $business->latitude = $coordinates['latitude'];
-        $business->longitude = $coordinates['longitude'];
+
+        // Safely assign latitude and longitude
+        $business->latitude = is_array($coordinates) ? ($coordinates['latitude'] ?? null) : null;
+        $business->longitude = is_array($coordinates) ? ($coordinates['longitude'] ?? null) : null;
 
         $business->save();
 

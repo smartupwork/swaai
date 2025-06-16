@@ -291,8 +291,14 @@ class StripeController extends Controller
                     ['price' => $request->price_id],
                 ],
                 'default_payment_method' => $paymentMethod->id,
+                'expand' => ['latest_invoice.payment_intent'],
             ]);
 
+            $paymentIntent = $subscription->latest_invoice->payment_intent ?? null;
+            $lastPaymentError = $paymentIntent->last_payment_error->message ?? null;
+
+            // Get friendly status message
+            $statusMessage = Subscriptions::getStripeStatusMessage($subscription->status, $lastPaymentError);
             // Save subscription record in DB
             $subscriptionRecord = \App\Models\Subscriptions::create([
                 'user_id' => $user->id,
@@ -302,12 +308,13 @@ class StripeController extends Controller
                 'status' => $subscription->status,
                 'start_date' => now(),
                 'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
+                'status_message' => $statusMessage,
             ]);
 
             Mail::to($user->email)->send(new SubscriptionConfirmation($user, $subscriptionRecord));
 
             return view('subscription.success', [
-                'message' => 'Subscription created successfully.',
+                'message' => $statusMessage,
                 'subscription_id' => $subscription->id,
                 'return_url' => 'myapp://payment-status?success=true'
             ]);

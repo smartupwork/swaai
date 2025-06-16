@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('payment_id');
             $table->string('stripe_plan_id')->nullable();
             $table->string('plan')->nullable();
-            $table->boolean('status')->default(1);
+            $table->string('status')->nullable();
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
             $table->timestamps();

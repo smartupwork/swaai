@@ -299,7 +299,7 @@ class StripeController extends Controller
                 'payment_id' => $payment->id,
                 'stripe_plan_id' => $request->price_id,
                 'plan' => $request->product,
-                'status' => $subscription->status === 'active' ? 1 : 0,
+                'status' => $subscription->status,
                 'start_date' => now(),
                 'end_date' => \Carbon\Carbon::createFromTimestamp($subscription->current_period_end),
             ]);

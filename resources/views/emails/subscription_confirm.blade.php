@@ -13,7 +13,7 @@
 
     <p><strong>Start Date:</strong> {{ \Carbon\Carbon::parse($subscription->start_date)->toFormattedDateString() }}</p>
     <p><strong>End Date:</strong> {{ \Carbon\Carbon::parse($subscription->end_date)->toFormattedDateString() }}</p>
-    <p><strong>Status:</strong> {{ $subscription->status ? 'Active' : 'Inactive' }}</p>
+    <p><strong>Status:</strong> {{ $subscription->status }}</p>
 
     <p>If you have any questions, feel free to reach out to our support team.</p>
 

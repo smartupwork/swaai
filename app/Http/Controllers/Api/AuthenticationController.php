@@ -64,10 +64,8 @@ class AuthenticationController extends Controller
             })
             ->first();
 
-        $subscriptionStatus = DB::table('subscriptions')
-            ->where('user_id', $user->id)
-            ->where('status', 1)
-            ->exists() ? 1 : 0;
+        $subscriptionStatus = $activeSubscription->status ?? null;
+        $statusMessage = $activeSubscription->status_message ?? null;
 
         $businessExists = DB::table('businesses')->where('user_id', $user->id)->exists();
 
@@ -84,6 +82,7 @@ class AuthenticationController extends Controller
             'businesses_created' => $businessExists ? 1 : 0,
             'is_Subscribed' => $activeSubscription ? 1 : 0,
             'subscription_status' => $subscriptionStatus,
+            'status_message' => $statusMessage,
         ]);
     }
 

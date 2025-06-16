@@ -226,10 +226,9 @@ class StripeController extends Controller
         try {
             $user = User::findOrFail($request->user_id);
 
-            // Delete any existing subscription records
             \App\Models\Subscriptions::where('user_id', $user->id)->delete();
+            \App\Models\PaymentMethodDb::where('user_id', $user->id)->delete();
 
-            // Create Stripe customer if not already created
             if (!$user->stripe_customer_id) {
                 $customer = \Stripe\Customer::create([
                     'email' => $user->email,
@@ -250,18 +249,18 @@ class StripeController extends Controller
                 $customer = \Stripe\Customer::retrieve($user->stripe_customer_id);
             }
 
-            // Attach provided payment method to the customer
+            
             $paymentMethod = \Stripe\PaymentMethod::retrieve($request->payment_method_id);
             $paymentMethod->attach(['customer' => $customer->id]);
 
-            // Update customer's default payment method
+            
             \Stripe\Customer::update($customer->id, [
                 'invoice_settings' => [
                     'default_payment_method' => $paymentMethod->id,
                 ],
             ]);
 
-            // Save card details locally
+            
             $payment = PaymentMethodDb::create([
                 'user_id' => $user->id,
                 'stripe_method_id' => $paymentMethod->id,
@@ -271,7 +270,7 @@ class StripeController extends Controller
                 'last_4' => $paymentMethod->card->last4,
             ]);
 
-            // Save billing address
+            
             UserMeta::updateOrCreate(
                 ['user_id' => $user->id],
                 [
@@ -280,11 +279,10 @@ class StripeController extends Controller
                     'city' => $request->city ?? '',
                     'state' => $request->state ?? '',
                     'postal_code' => $request->postal_code ?? '',
-                    'country_id' => 1, // Change this if you're storing ISO code
+                    'country_id' => 1,
                 ]
             );
 
-            // Create subscription
             $subscription = \Stripe\Subscription::create([
                 'customer' => $customer->id,
                 'items' => [

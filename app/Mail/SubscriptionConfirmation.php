@@ -14,12 +14,12 @@ class SubscriptionConfirmation extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    public $subscription;
+    public $subscriptionRecord;
 
-    public function __construct($user, $subscription)
+    public function __construct($user, $subscriptionRecord)
     {
         $this->user = $user;
-        $this->subscription = $subscription;
+        $this->subscriptionRecord = $subscriptionRecord;
     }
 
     public function build()

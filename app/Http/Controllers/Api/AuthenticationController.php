@@ -33,11 +33,8 @@ class AuthenticationController extends Controller
             'role_id' => $fields['role_id'],
         ]);
 
-        $token = $user->createToken($request->email);
-
         return [
-            'user' => $user,
-            'token' => $token->plainTextToken
+            'user' => $user
         ];
     }
 
@@ -86,6 +83,19 @@ class AuthenticationController extends Controller
         ]);
     }
 
+    public function deactivate($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->status = 1;
+        $user->save();
+
+        return response()->json(['message' => 'User Deleted successfully']);
+    }
 
     public function logout(Request $request)
     {
@@ -95,6 +105,8 @@ class AuthenticationController extends Controller
             'message' => 'Logged out successfully',
         ], 200);
     }
+
+    
     public function requestReset(Request $request)
     {
         $validator = Validator::make($request->all(), [

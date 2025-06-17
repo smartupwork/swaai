@@ -242,7 +242,7 @@ class BusinessController extends Controller
 
 
         $coordinates = $googleMapsService->getCoordinatesFromAddress($fullAddress);
-
+        \Log::info('Google Maps Coordinates', ['address' => $fullAddress, 'coordinates' => $coordinates]);
         // if (!$coordinates) {
         //     return response()->json(['message' => 'Invalid address. Please enter a valid location.'], 400);
         // }

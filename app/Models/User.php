@@ -31,6 +31,7 @@ class User extends Authenticatable
         'profile_image',
         'cover_image',
         'status',
+        'is_reviewed',
         'password',
     ];
 

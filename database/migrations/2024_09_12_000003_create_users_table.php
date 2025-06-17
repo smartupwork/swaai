@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('cover_image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->boolean('status')->default(0)->nullable();
+            $table->boolean('is_reviewed')->default(0)->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

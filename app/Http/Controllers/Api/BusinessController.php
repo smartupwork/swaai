@@ -75,7 +75,7 @@ class BusinessController extends Controller
 
         $user = DB::table('users')
             ->where('id', $business->user_id)
-            ->select('profile_image')
+            ->select('profile_image', 'summary_desc')
             ->first();
 
 
@@ -98,6 +98,7 @@ class BusinessController extends Controller
         return response()->json([
             'business' => $business,
             'profile_image' => $profileImage,
+            'summary_desc' => $user->summary_desc ?? null,
             'reviews' => $reviews,
             'media' => $media
         ]);

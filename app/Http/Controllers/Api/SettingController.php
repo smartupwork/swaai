@@ -12,20 +12,11 @@ class SettingController extends Controller
     {
         $baseUrl = rtrim(config('app.url'), '/') . '/public/media/setting/';
 
-        $keys = [
-            'logo',
-            'sec_spl_srn_image',
-            'sec_spl_srn_title',
-            'sec_spl_srn_desc',
-            'business_spl_srn_image',
-            'business_spl_srn_title',
-            'consumer_spl_srn_image',
-            'consumer_spl_srn_title',
-        ];
+        // Get first (and only) row from settings
+        $settings = DB::table('settings')->first();
 
-        $settings = DB::table('settings')
-            ->whereIn('key', $keys)
-            ->pluck('value', 'key');
+        // Convert object to array
+        $settings = (array) $settings;
 
         foreach (['logo', 'sec_spl_srn_image', 'business_spl_srn_image', 'consumer_spl_srn_image'] as $imageKey) {
             if (!empty($settings[$imageKey])) {

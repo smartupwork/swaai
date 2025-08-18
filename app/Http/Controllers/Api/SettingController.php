@@ -18,7 +18,7 @@ class SettingController extends Controller
         // Convert object to array
         $settings = (array) $settings;
 
-        foreach (['logo', 'sec_spl_srn_image', 'business_spl_srn_image', 'consumer_spl_srn_image'] as $imageKey) {
+        foreach (['logo', 'sec_spl_srn_image', 'business_spl_srn_image', 'business_sec_spl_srn_image', 'consumer_spl_srn_image'] as $imageKey) {
             if (!empty($settings[$imageKey])) {
                 $settings[$imageKey] = $baseUrl . ltrim($settings[$imageKey], '/');
             }
@@ -34,6 +34,7 @@ class SettingController extends Controller
                 ],
                 'business' => [
                     'image' => $settings['business_spl_srn_image'] ?? null,
+                    'sec_image' => $settings['business_sec_spl_srn_image'] ?? null,
                     'title' => $settings['business_spl_srn_title'] ?? null,
                 ],
                 'consumer' => [

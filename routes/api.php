@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\PostShareController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\ConsumerController;
+use App\Http\Controllers\Api\SettingController;
 use App\Models\Business;
 use App\Http\Controllers\Api\StripeWebhookController;
 /*
@@ -29,6 +30,10 @@ use App\Http\Controllers\Api\StripeWebhookController;
 */
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
+
+//setting data
+Route::get('/splash-screen/content', [SettingController::class, 'get_splash_screen_data']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -40,7 +45,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories', [BusinessController::class, 'getCategories']);
     Route::get('/sub/categories', [BusinessController::class, 'get_sub_categories']);
     //Route::post('/checkout', [StripeController::class, 'checkout']);
-
     
     // Business Routes
     Route::post('/createbusiness', [BusinessController::class, 'createBusiness']);

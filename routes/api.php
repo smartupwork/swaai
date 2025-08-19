@@ -38,6 +38,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::get('/get-businesstypes', [SettingController::class, 'getBusinessTypes']);
+
     Route::post('/logout', [AuthenticationController::class, 'logout']);
     Route::get('/plans', [StripeController::class, 'getPlans']);
     Route::post('/deactivate-user/{id}', [AuthenticationController::class, 'deactivate']);

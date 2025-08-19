@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BusinessType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,5 +44,22 @@ class SettingController extends Controller
                 ],
             ],
         ]);
+    }
+
+    
+
+    public function getBusinessTypes()
+    {
+        $businesstypes = BusinessType::all();
+
+        if ($businesstypes) {
+            return response()->json([
+                'data' => $businesstypes
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Not Found!'
+            ], 404);
+        }
     }
 }

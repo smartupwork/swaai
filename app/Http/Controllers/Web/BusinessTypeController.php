@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\BusinessType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class BusinessTypeController extends Controller
 {
@@ -22,16 +24,28 @@ class BusinessTypeController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
         ]);
 
-
         $businesstypes = new BusinessType();
         $businesstypes->title = $validated['title'];
-        $businesstypes->save();
 
+        // Generate base slug
+        $slug = Str::slug($validated['title']);
+
+        // Ensure uniqueness
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (BusinessType::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $businesstypes->slug = $slug;
+
+        $businesstypes->save();
 
         return redirect()->route('businesstypes.index')->with('success', 'Business Type created successfully!');
     }
@@ -45,7 +59,6 @@ class BusinessTypeController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $businesstype = BusinessType::findOrFail($id);
 
         $validatedData = $request->validate([
@@ -53,14 +66,32 @@ class BusinessTypeController extends Controller
         ]);
 
         $businesstype->title = $validatedData['title'];
-       
-        $save = $businesstype->update();
+
+        // Generate a new slug
+        $slug = Str::slug($validatedData['title']);
+
+        // Ensure unique slug (ignore current record's slug when updating)
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while (
+            BusinessType::where('slug', $slug)
+            ->where('id', '!=', $businesstype->id)
+            ->exists()
+        ) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $businesstype->slug = $slug;
+
+        $save = $businesstype->save();
+
         if ($save) {
             return redirect()->route('businesstypes.index')->with('success', 'Business Type updated successfully!');
         } else {
-            request()->session('error', 'Error occured while updating');
+            return redirect()->route('businesstypes.index')->with('error', 'Error occurred while updating');
         }
-        return redirect()->route('businesstypes.index')->with('error', 'Sorry, something wrong.');
     }
 
     public function delete($id)

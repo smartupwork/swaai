@@ -55,6 +55,7 @@ Route::middleware(['admin'])->group(function () {
     Route::put('/settings/logo/store', [SettingController::class, 'logo'])->name('settings.logo');
     Route::put('/settings/secscreen/store', [SettingController::class, 'updateSecondSplash'])->name('settings.secscreen');
     Route::put('/settings/busconscreen/store', [SettingController::class, 'updateBusinessConsumerSplash'])->name('settings.busconscreen');
+    Route::put('/settings/botd/store', [SettingController::class, 'updatedBotd'])->name('settings.botd');
 });
 
 Route::get('/subscribe', [StripeController::class, 'showCheckoutForm'])->name('subscribe.form');

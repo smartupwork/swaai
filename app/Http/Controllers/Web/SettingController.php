@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-
+use App\Models\Business;
 
 class SettingController extends Controller
 {
@@ -15,7 +15,9 @@ class SettingController extends Controller
 
         $settings = Setting::first();
 
-        return view('admin.settings.index', ['settings' => $settings]);
+        $businesses = Business::all();
+
+        return view('admin.settings.index', ['settings' => $settings, 'businesses' => $businesses]);
     }
 
     public function logo(Request $request)
@@ -158,5 +160,45 @@ class SettingController extends Controller
         $setting->save();
 
         return redirect()->back()->with('success', 'Business & Consumer splash screen settings updated successfully.');
+    }
+    
+    
+    public function updatedBotd(Request $request){
+           $request->validate([
+            'botd_image' => 'nullable|file|image|mimes:jpeg,png,jpg,svg|max:204811',
+            'botd_heading' => 'nullable|string|max:8553',
+            'botd_business'  => 'nullable|string|max:1000',
+        ]);
+
+
+        $setting = Setting::first();
+        if (!$setting) {
+            $setting = Setting::create();
+        }
+
+
+        if ($request->hasFile('botd_image')) {
+
+            if (!empty($setting->botd_image)) {
+                $oldPath = public_path('media/setting/' . $setting->botd_image);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
+            }
+
+            $file = $request->file('botd_image');
+            $filename = 'botd_image' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('media/setting'), $filename);
+            $setting->botd_image = $filename;
+        }
+
+
+        $setting->botd_heading = $request->input('botd_heading');
+        $setting->botd_business = $request->input('botd_business');
+
+
+        $setting->save();
+
+        return redirect()->back()->with('success', 'BOTD screen settings updated successfully.');
     }
 }

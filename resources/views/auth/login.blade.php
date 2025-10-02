@@ -4,7 +4,7 @@
 <head>
     
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="{{ url('assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url('/public/assets/images/favicon.ico') }}">
     <title>Login Form</title>
     <style>
         body {
@@ -94,9 +94,9 @@
 
     <div class="login-container">
         @if (!empty($settings) && !empty($settings->logo) && file_exists(public_path('media/setting/' . $settings->logo)))
-            <img src="{{ asset('media/setting/' . $settings->logo) }}" alt="Swaai Logo" class="logo">
+            <img src="{{ asset('public/media/setting/' . $settings->logo) }}" alt="Swaai Logo" class="logo">
         @else
-            <img src="{{ asset('media/web-hero2.png') }}" alt="Swaai Logo" class="logo">
+            <img src="{{ asset('public/media/web-hero2.png') }}" alt="Swaai Logo" class="logo">
         @endif
         <div class="subtitle"><strong>Admin Dashboard</strong></div>
 

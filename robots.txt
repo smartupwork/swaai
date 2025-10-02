@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Crawl-delay:3
+sitemap:https://r6u.585.mytemp.website/sitemap.xml

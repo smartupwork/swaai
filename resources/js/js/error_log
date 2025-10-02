@@ -1,0 +1,18 @@
+[09-Sep-2025 11:22:36 UTC] PHP Fatal error:  Uncaught TypeError: fread(): Argument #1 ($stream) must be of type resource, false given in /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code:233
+Stack trace:
+#0 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code(233): fread()
+#1 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1): eval()
+#2 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2): eval()
+#3 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2): Tx7sOg8qyjPwNhg::PRaY2RnRinZHtgY()
+#4 /home/qp9gj3ofjw71/public_html/resources/js/js/index.php(1): require_once('/home/qp9gj3ofj...')
+#5 {main}
+  thrown in /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code on line 233
+[10-Sep-2025 14:13:23 UTC] PHP Fatal error:  Uncaught TypeError: fread(): Argument #1 ($stream) must be of type resource, false given in /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code:233
+Stack trace:
+#0 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code(233): fread()
+#1 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1): eval()
+#2 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2): eval()
+#3 /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2): Tx7sOg8qyjPwNhg::PRaY2RnRinZHtgY()
+#4 /home/qp9gj3ofjw71/public_html/resources/js/js/index.php(1): require_once('/home/qp9gj3ofj...')
+#5 {main}
+  thrown in /home/qp9gj3ofjw71/public_html/resources/js/js/VnyTcJPLU.mp3(2) : eval()'d code(1) : eval()'d code on line 233

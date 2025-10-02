@@ -11,14 +11,14 @@
 
     <!-- App favicon -->
 
-    <link rel="shortcut icon" href="{{ url('assets/images/favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url('assets/css/jsvectormap.min.css') }}">
-    <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
+  <link rel="shortcut icon" href="{{ url('public/assets/images/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url('public/assets/css/jsvectormap.min.css') }}">
+    <link rel="stylesheet" href="{{ url('public/assets/css/style.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App css -->
-    <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('assets/css/icons.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ url('assets/css/app.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('public/assets/css/bootstrap.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('public/assets/css/icons.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ url('public/assets/css/app.min.css') }}" type="text/css" />
 
 </head>
 
@@ -53,25 +53,25 @@
                     <li class="dropdown topbar-item">
                         <a class="nav-link dropdown-toggle arrow-none nav-icon" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" aria-expanded="false">
-                            <img src="{{ url('assets/images/user-avatar.jpg') }}" alt=""
+                            <img src="{{ url('public/assets/images/user-avatar.jpg') }}" alt=""
                                 class="thumb-lg rounded-circle">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end py-0">
                             <div class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle">
                                 <div class="flex-shrink-0">
-                                    <img src="{{ url('assets/images/user-avatar.jpg') }}" alt=""
+                                    <img src="{{ url('public/assets/images/user-avatar.jpg') }}" alt=""
                                         class="thumb-md rounded-circle">
                                 </div>
                                 <div class="flex-grow-1 ms-2 text-truncate align-self-center">
-                                    <h6 class="my-0 fw-medium text-dark fs-13">{{ auth()->user()->name }}</h6>
+                                    <h6 class="my-0 fw-medium text-dark fs-13">{{ auth()->user()->first_name }}</h6>
                                     <small
-                                        class="text-muted mb-0">{{ auth()->user()->role->name ?? 'Unknown' }}</small>
+                                        class="text-muted mb-0">Admin</small>
                                 </div><!--end media-body-->
                             </div>
                             <div class="dropdown-divider mt-0"></div>
                             <small class="text-muted px-2 pb-1 d-block">Account</small>
-                            <a class="dropdown-item" href=""><i
-                                    class="las la-user fs-18 me-1 align-text-bottom"></i> Profile</a>
+                            <!--<a class="dropdown-item" href=""><i-->
+                            <!--        class="las la-user fs-18 me-1 align-text-bottom"></i> Profile</a>-->
                             <div class="dropdown-divider mb-0"></div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
@@ -93,14 +93,14 @@
         <div class="brand">
             <a href="{{ route('admin.dashboard') }}" class="logo">
                 <span>
-                    @if (!empty($settings) && !empty($settings->logo) && file_exists(public_path('media/setting/' . $settings->logo)))
-                        <img src="{{ asset('media/setting/' . $settings->logo) }}" alt="logo" class="logo-sm"
-                            style="height:100px; width:100px;">
-                    @else
-                        <img src="{{ asset('media/web-hero2.png') }}" alt="logo" class="logo-sm"
-                            style="height:100px; width:100px;">
-                    @endif
-                </span>
+    @if (!empty($settings) && !empty($settings->logo) && file_exists(public_path('media/setting/' . $settings->logo)))
+        <img src="{{ asset('public/media/setting/' . $settings->logo) }}" alt="logo" class="logo-sm"
+             style="height:100px; width:100px;">
+    @else
+        <img src="{{ asset('public/media/web-hero2.png') }}" alt="logo" class="logo-sm"
+             style="height:100px; width:100px;">
+    @endif
+</span>
             </a>
         </div>
         <!--end brand-->
@@ -288,19 +288,19 @@
     <!-- Javascript  -->
     <!-- vendor js -->
 
-    <script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ url('assets/js/simplebar.min.js') }}"></script>
+    <script src="{{ url('public/assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url('public/assets/js/simplebar.min.js') }}"></script>
     @if (!request()->is('admin/deal-requests') && !request()->is('admin/users'))
-        <script src="{{ url('assets/js/simple-datatables.js') }}"></script>
-        <script src="{{ url('assets/js/datatable.init.js') }}"></script>
+        <script src="{{ url('public/assets/js/simple-datatables.js') }}"></script>
+        <script src="{{ url('public/assets/js/datatable.init.js') }}"></script>
     @endif
-    <script src="{{ url('assets/js/apexcharts.min.js') }}"></script>
-    <script src="{{ url('assets/js/stock-prices.js') }}"></script>
-    <script src="{{ url('assets/js/jsvectormap.min.js') }}"></script>
-    <script src="{{ url('assets/js/world.js') }}"></script>
-    <script src="{{ url('assets/js/index.init.js') }}"></script>
-    <script src="{{ url('assets/js/app.js') }}"></script>
-    <script src="{{ url('assets/js/form-validation.js') }}"></script>
+    <script src="{{ url('public/assets/js/apexcharts.min.js') }}"></script>
+    <script src="{{ url('public/assets/js/stock-prices.js') }}"></script>
+    <script src="{{ url('public/assets/js/jsvectormap.min.js') }}"></script>
+    <script src="{{ url('public/assets/js/world.js') }}"></script>
+    <script src="{{ url('public/assets/js/index.init.js') }}"></script>
+    <script src="{{ url('public/assets/js/app.js') }}"></script>
+    <script src="{{ url('public/assets/js/form-validation.js') }}"></script>
 
 </body>
 <!--end body-->

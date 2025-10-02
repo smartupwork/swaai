@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Acquisight'),
+    'name' => env('APP_NAME', 'Swaai'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://www.swaai-app.test/'),
+    'url' => env('APP_URL', 'https://r6u.585.mytemp.website'),
 
     'asset_url' => env('ASSET_URL'),
 

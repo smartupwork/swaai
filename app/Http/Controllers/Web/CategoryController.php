@@ -26,7 +26,7 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'cat_color' => 'nullabe|string|size:7',
+            'cat_color' => 'nullable|string|size:7',
         ]);
 
 

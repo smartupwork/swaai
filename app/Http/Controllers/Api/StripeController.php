@@ -35,9 +35,9 @@ class StripeController extends Controller
     }
 
     public function createBillingPortal(Request $request)
-    {
+    {     
         $user = User::findOrFail($request->user_id);
-
+        
         if (!$user->stripe_customer_id) {
             return response()->json([
                 'status' => 'error',

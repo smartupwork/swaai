@@ -26,6 +26,10 @@ class Setting extends Model
 
         'consumer_spl_srn_image',
 
-        'consumer_spl_srn_title'
+        'consumer_spl_srn_title',
+
+        'botd_heading',
+        'botd_image',
+        'botd_business'
     ];
 }

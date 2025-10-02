@@ -45,7 +45,7 @@
                                             <span class="text-danger">{{ $errors->first('logo') }}</span>
                                         @endif
                                         @if (!empty($settings->logo))
-                                            <img src="{{ asset('media/setting/' . $settings->logo) }}" alt="Current Logo"
+                                            <img src="{{ asset('public/media/setting/' . $settings->logo) }}" alt="Current Logo"
                                                 style="max-height: 60px;">
                                         @endif
                                     </div>
@@ -83,7 +83,7 @@
                                             <span class="text-danger">{{ $errors->first('sec_spl_srn_image') }}</span>
                                         @endif
                                         @if (!empty($settings->sec_spl_srn_image))
-                                            <img src="{{ asset('media/setting/' . $settings->sec_spl_srn_image) }}" alt="Current Logo"
+                                            <img src="{{ asset('public/media/setting/' . $settings->sec_spl_srn_image) }}" alt="Current Logo"
                                                 style="max-height: 60px;">
                                         @endif
                                     </div>
@@ -92,7 +92,7 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-3 col-form-label">Second Splash Screen Title</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="horizontalInput1" name="sec_spl_srn_title" value="{{$settings->sec_spl_srn_title}}">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="sec_spl_srn_title" value="{{ $settings->sec_spl_srn_title ?? '' }}">
                                         @if ($errors->has('sec_spl_srn_title'))
                                             <span class="text-danger">{{ $errors->first('sec_spl_srn_title') }}</span>
                                         @endif
@@ -102,7 +102,7 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-3 col-form-label">Second Splash Screen Description</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="horizontalInput1" name="sec_spl_srn_desc" value="{{$settings->sec_spl_srn_desc}}">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="sec_spl_srn_desc" value="{{$settings->sec_spl_srn_desc ?? '' }}">
                                         @if ($errors->has('sec_spl_srn_desc'))
                                             <span class="text-danger">{{ $errors->first('sec_spl_srn_desc') }}</span>
                                         @endif 
@@ -142,7 +142,7 @@
                                             <span class="text-danger">{{ $errors->first('business_spl_srn_image') }}</span>
                                         @endif
                                         @if (!empty($settings->business_spl_srn_image))
-                                            <img src="{{ asset('media/setting/' . $settings->business_spl_srn_image) }}" alt="Current Logo"
+                                            <img src="{{ asset('public/media/setting/' . $settings->business_spl_srn_image) }}" alt="Current Logo"
                                                 style="max-height: 60px;">
                                         @endif
                                     </div>
@@ -151,7 +151,7 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-3 col-form-label">Business Splash Screen Title</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="horizontalInput1" name="business_spl_srn_title" value="{{$settings->business_spl_srn_title}}">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="business_spl_srn_title" value="{{$settings->business_spl_srn_title ?? '' }}">
                                         @if ($errors->has('business_spl_srn_title'))
                                             <span class="text-danger">{{ $errors->first('business_spl_srn_title') }}</span>
                                         @endif
@@ -166,7 +166,7 @@
                                             <span class="text-danger">{{ $errors->first('business_sec_spl_srn_image') }}</span>
                                         @endif
                                         @if (!empty($settings->business_sec_spl_srn_image))
-                                            <img src="{{ asset('media/setting/' . $settings->business_sec_spl_srn_image) }}" alt="Current Logo"
+                                            <img src="{{ asset('public/media/setting/' . $settings->business_sec_spl_srn_image) }}" alt="Current Logo"
                                                 style="max-height: 60px;">
                                         @endif
                                     </div>
@@ -180,7 +180,7 @@
                                             <span class="text-danger">{{ $errors->first('consumer_spl_srn_image') }}</span>
                                         @endif
                                         @if (!empty($settings->consumer_spl_srn_image))
-                                            <img src="{{ asset('media/setting/' . $settings->consumer_spl_srn_image) }}" alt="Current Logo"
+                                            <img src="{{ asset('public/media/setting/' . $settings->consumer_spl_srn_image) }}" alt="Current Logo"
                                                 style="max-height: 60px;">
                                         @endif
                                     </div>
@@ -189,12 +189,82 @@
                                 <div class="row mb-3">
                                     <label class="col-sm-3 col-form-label">Consumer Splash Screen Title</label>
                                     <div class="col-sm-6">
-                                        <input type="text" class="form-control" id="horizontalInput1" name="consumer_spl_srn_title" value="{{$settings->consumer_spl_srn_title}}">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="consumer_spl_srn_title" value="{{$settings->consumer_spl_srn_title ?? '' }}">
                                         @if ($errors->has('consumer_spl_srn_title'))
                                             <span class="text-danger">{{ $errors->first('consumer_spl_srn_title') }}</span>
                                         @endif
                                     </div>
                                 </div>
+
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>BOTD</strong>
+                        <button class="btn btn-link" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#screenthree-settings">
+                            Edit
+                        </button>
+                    </div>
+                    <div id="screenthree-settings" class="collapse">
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('settings.botd') }}" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">BOTD Heading</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="botd_heading" value="{{$settings->botd_heading}}">
+                                        @if ($errors->has('botd_heading'))
+                                            <span class="text-danger">{{ $errors->first('botd_heading') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                <label for="role" class="col-sm-3 col-form-label">Select Business</label>
+                                <div class="col-sm-6">
+                                <select class="form-select" id="horizontalInput1" name="botd_business">
+                                    @foreach($businesses as $business)
+                                    <option value="{{$business->id}}">{{$business->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                           </div>
+                                {{-- <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">BOTD Business Name</label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" id="horizontalInput1" name="botd_business" value="{{$settings->botd_business}}">
+                                        @if ($errors->has('botd_business'))
+                                            <span class="text-danger">{{ $errors->first('botd_business') }}</span>
+                                        @endif
+                                    </div>
+                                </div> --}}
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-3 col-form-label">BOTD Image</label>
+                                    <div class="col-sm-6">
+                                        <input type="file" class="form-control" id="horizontalInput1" name="botd_image">
+                                        @if ($errors->has('botd_image'))
+                                            <span class="text-danger">{{ $errors->first('botd_image') }}</span>
+                                        @endif
+                                        @if (!empty($settings->botd_image))
+                                            <img src="{{ asset('public/media/setting/' . $settings->botd_image) }}" alt="Current Logo"
+                                                style="max-height: 60px;">
+                                        @endif
+                                    </div>
+                                </div>
+
 
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary">Save Settings</button>

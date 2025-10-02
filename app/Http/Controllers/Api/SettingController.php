@@ -13,15 +13,28 @@ class SettingController extends Controller
     {
         $baseUrl = rtrim(config('app.url'), '/') . '/public/media/setting/';
 
-        // Get first (and only) row from settings
         $settings = DB::table('settings')->first();
-
-        // Convert object to array
         $settings = (array) $settings;
 
-        foreach (['logo', 'sec_spl_srn_image', 'business_spl_srn_image', 'business_sec_spl_srn_image', 'consumer_spl_srn_image'] as $imageKey) {
+        foreach (['logo', 'sec_spl_srn_image', 'business_spl_srn_image', 'business_sec_spl_srn_image', 'consumer_spl_srn_image', 'botd_image'] as $imageKey) {
             if (!empty($settings[$imageKey])) {
                 $settings[$imageKey] = $baseUrl . ltrim($settings[$imageKey], '/');
+            }
+        }
+
+        
+        $botd = null;
+        if (!empty($settings['botd_business'])) {
+            $business = DB::table('businesses')->where('id', $settings['botd_business'])->first();
+
+            if ($business) {
+                $botd = [
+                    'image' => $settings['botd_image'] ?? null,
+                    'business_id' => $business->id,
+                    'business_type' => $business->business_type ?? null,
+                    'heading' => $settings['botd_heading'] ?? null,
+                    'business_name' => $business->name ?? null,
+                ];
             }
         }
 
@@ -42,6 +55,7 @@ class SettingController extends Controller
                     'image' => $settings['consumer_spl_srn_image'] ?? null,
                     'title' => $settings['consumer_spl_srn_title'] ?? null,
                 ],
+                'botd' => $botd,
             ],
         ]);
     }
